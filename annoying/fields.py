@@ -87,6 +87,20 @@ if SOUTH:
         ["^annoying\.fields\.AutoOneToOneField"])
 
 
+class SingleRelatedObjectDescriptorReturnsNone(SingleRelatedObjectDescriptor):
+    @atomic
+    def __get__(self, instance, instance_type=None):
+        try:
+            return super(SingleRelatedObjectDescriptorReturnsNone, self).__get__(instance=instance, instance_type=instance_type)
+        except ObjectDoesNotExist:
+            return None
+
+class OneToOneOrNoneField(models.OneToOneField):
+    """A OneToOneField that returns None if the related object doesn't exist"""
+    def contribute_to_related_class(self, cls, related):
+        setattr(cls, related.get_accessor_name(), SingleRelatedObjectDescriptorReturnsNone(related))
+
+    
 if VERSION >= (1, 8):
     JSONFieldBase = models.TextField
 else:
