@@ -8,6 +8,7 @@ try:
 except ImportError:
     from django.db.models.fields.related_descriptors import ReverseOneToOneDescriptor as SingleRelatedObjectDescriptor
 from django.utils import six
+from django.core.exceptions import ObjectDoesNotExist
 
 # South support.
 try:
